@@ -10,35 +10,38 @@ fn get_file() -> Vec<usize>{
 }
 
 fn calculate_module_fuel(mass: &usize) -> usize {
-    let round_down = mass / 3; // using usize automatically rounds down
-    let res = round_down - 2;
-    res
+    let round_down = mass / 3;
+    
+    if round_down > 2 {
+        round_down - 2
+    } else {
+        0
+    }
 }
 
-fn calculate_total_fuel() -> usize {
+fn calculate_full_fuel(mass: &usize) -> usize {
+    let fuel = calculate_module_fuel(mass);
+
+    if fuel > 0 {
+        fuel + calculate_full_fuel(&fuel)
+    } else {
+        fuel
+    }
+}
+
+fn calculate_total_fuel_part_1() -> usize {
     let file = get_file();
     file.iter().map(|x| calculate_module_fuel(x)).sum()
 }
 
-fn main() {
-    println!("Total fuel need is {:?}", calculate_total_fuel());
+fn calculate_total_fuel_part_2() -> usize {
+    let file = get_file();
+    file.iter().map(|x| calculate_full_fuel(x)).sum()
 }
 
 
 
-
-
-
-
-/*use std::env;
-use std::fs;
-
 fn main() {
-    // --snip--
-    println!("In file {}", file_path);
-
-    let contents = fs::read_to_string(file_path)
-        .expect("Should have been able to read the file");
-
-    println!("With text:\n{contents}");
-}*/
+    println!("Total fuel need is {:?}", calculate_total_fuel_part_1());
+    println!("Total fuel need is {:?}", calculate_total_fuel_part_2());
+}
